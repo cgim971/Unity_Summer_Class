@@ -51,7 +51,7 @@ public class DefaultData : ScriptableObject
         return retList;
     }
 
-    public virtual int constuctorData(string _dataIdx)
+    public virtual int constructorData(string _dataIdx)
     {
         return getDataCnt();
     }
