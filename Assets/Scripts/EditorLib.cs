@@ -62,7 +62,7 @@ public class EditorLib : MonoBehaviour
         {
             if (GUILayout.Button("Constructor", GUILayout.Width(sizeWidth)))
             {
-                data.constuctorData("New Data");
+                data.constructorData("New Data");
                 nowIdx = data.getDataCnt() - 1;
                 objLayer = null;
             }
