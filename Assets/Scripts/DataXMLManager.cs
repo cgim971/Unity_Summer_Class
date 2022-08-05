@@ -4,24 +4,35 @@ using UnityEngine;
 
 public class DataXMLManager : MonoBehaviour
 {
-    private static EffectXMLData xmlData = null;
+    private static EffectXMLData effectXmlData = null;
+    private static SoundXMLData soundXmlData = null;
 
     private void Start()
     {
-        if (xmlData == null)
+        if (effectXmlData == null)
         {
-            xmlData = ScriptableObject.CreateInstance<EffectXMLData>();
-            xmlData.LoadData();
+            effectXmlData = ScriptableObject.CreateInstance<EffectXMLData>();
+            effectXmlData.LoadData();
         }
     }
 
     public static EffectXMLData EffectData()
     {
-        if (xmlData == null)
+        if (effectXmlData == null)
         {
-            xmlData = ScriptableObject.CreateInstance<EffectXMLData>();
-            xmlData.LoadData();
+            effectXmlData = ScriptableObject.CreateInstance<EffectXMLData>();
+            effectXmlData.LoadData();
         }
-        return xmlData;
+        return effectXmlData;
+    }
+
+    public static SoundXMLData SoundData()
+    {
+        if (soundXmlData == null)
+        {
+            soundXmlData = ScriptableObject.CreateInstance<SoundXMLData>();
+            soundXmlData.LoadData();
+        }
+        return soundXmlData;
     }
 }
