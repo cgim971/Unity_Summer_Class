@@ -9,9 +9,9 @@ public class EffectXMLData : DefaultData
 {
     public EffectAttr[] effectAttrs = new EffectAttr[0];
 
-    public string effectAttrPath = "Effects/";
+    public string effectAttrPath = "Resources/Prefab/Effects/";
     private string xmlPath = "";
-    private string xmlName = "effectData.xml";
+    private string xmlName = "effecXmltData.xml";
     private string dataPath = "Data/effectData";
 
     private const string EFFECT = "effect";
@@ -71,25 +71,25 @@ public class EffectXMLData : DefaultData
 
     public void writeXmlData()
     {
-        using (XmlTextWriter xml = new XmlTextWriter(xmlPath + xmlName, System.Text.Encoding.Unicode))
+        using (XmlTextWriter xmlInfo = new XmlTextWriter(xmlPath + xmlName, System.Text.Encoding.Unicode))
         {
-            xml.WriteStartDocument();
-            xml.WriteStartElement(EFFECT);
-            xml.WriteElementString("length", getDataCnt().ToString());
+            xmlInfo.WriteStartDocument();
+            xmlInfo.WriteStartElement(EFFECT);
+            xmlInfo.WriteElementString("length", getDataCnt().ToString());
             for (int i = 0; i < this.idx.Length; i++)
             {
                 EffectAttr attr = this.effectAttrs[i];
-                xml.WriteStartElement(DEFAULT);
-                xml.WriteElementString("code", i.ToString());
-                xml.WriteElementString("idx", this.idx[i]);
-                xml.WriteElementString("effectAttrType", attr.effectAttrType.ToString());
-                xml.WriteElementString("effectObjName", attr.effectObjName);
-                xml.WriteElementString("effectObjPath", attr.effectObjPath);
-                xml.WriteEndElement();
+                xmlInfo.WriteStartElement(DEFAULT);
+                xmlInfo.WriteElementString("code", i.ToString());
+                xmlInfo.WriteElementString("idx", this.idx[i]);
+                xmlInfo.WriteElementString("effectAttrType", attr.effectAttrType.ToString());
+                xmlInfo.WriteElementString("effectObjName", attr.effectObjName);
+                xmlInfo.WriteElementString("effectObjPath", attr.effectObjPath);
+                xmlInfo.WriteEndElement();
             }
 
-            xml.WriteEndElement();
-            xml.WriteEndDocument();
+            xmlInfo.WriteEndElement();
+            xmlInfo.WriteEndDocument();
         }
     }
 
@@ -123,6 +123,19 @@ public class EffectXMLData : DefaultData
         }
         return getDataCnt();
     }
+
+    private T[] addVal<T>(T[] attrs)
+    {
+        ArrayList _tmpList = new ArrayList;
+        foreach(T _val in attrs)
+        {
+            _tmpList.Add(_val);
+        }
+        _tmpList.Add((T)Activator.CreateInstance(typeof(T)));
+        return (T[])_tmpList.ToArray(typeof(T));
+    }
+
+
 
     public override void deleteData(int index)
     {
