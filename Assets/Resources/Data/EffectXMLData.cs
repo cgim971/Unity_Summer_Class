@@ -126,7 +126,7 @@ public class EffectXMLData : DefaultData
 
     private T[] addVal<T>(T[] attrs)
     {
-        ArrayList _tmpList = new ArrayList;
+        ArrayList _tmpList = new ArrayList();
         foreach(T _val in attrs)
         {
             _tmpList.Add(_val);

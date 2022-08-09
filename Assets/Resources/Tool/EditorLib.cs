@@ -6,11 +6,19 @@ using System;
 using System.IO;
 using System.Text;
 
-public class EditorLib : MonoBehaviour
+// 1. 파일 경로를 찾아주는 기능
+// 2. enum structure
+// 3. layout
+//  1) Top
+//  2) list : content
+//  3) bottom
+public class EditorLib
 {
     public static string getAssetPath(UnityEngine.Object _clip)
     {
         string retStrPath = string.Empty;
+
+        // Assets/Resources/......
         retStrPath = AssetDatabase.GetAssetPath(_clip);
         string[] tmpStrPath = retStrPath.Split('/');
 
@@ -35,12 +43,12 @@ public class EditorLib : MonoBehaviour
 
     public static void makeEnumClass(string enumName, StringBuilder enumData)
     {
-        string _filePathTemplate = "Assets/Script/Editor/EnumClassTemplate.txt";
+        string _filePathTemplate = "Assets/Editor/Class/EnumClassTemplate.txt";
 
         string contentClassTemplate = File.ReadAllText(_filePathTemplate);
 
-        contentClassTemplate = contentClassTemplate.Replace("$DATA$", enumData.ToString());
-        contentClassTemplate = contentClassTemplate.Replace("$ENUM$", enumName);
+        contentClassTemplate = contentClassTemplate.Replace("$CLASSENUM$", enumName);
+        contentClassTemplate = contentClassTemplate.Replace("$DATAINFO$", enumData.ToString());
 
         string tempFilePathTemplate = "Assets/Scripts/contentClassTemplate/";
         if (Directory.Exists(tempFilePathTemplate) == false)
