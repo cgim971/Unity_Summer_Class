@@ -17,7 +17,9 @@ public class ObitCamera : MonoBehaviour
 
     public Transform characterPlayer;
 
+    // 플레이어 좌표
     public Vector3 pivotOffset = new Vector3(0f, 1f, 0f);
+    // 카메라 좌표
     public Vector3 camOffset = new Vector3(0.4f, 0.5f, -2.0f);
 
     // 마우스 이동 속도
@@ -47,7 +49,9 @@ public class ObitCamera : MonoBehaviour
 
     private Vector3 lerpPivotOffset;
     private Vector3 lerpCamOffset;
+    // 내가 어느 타겟까지 볼 것인지
     private Vector3 targetPivotOffset;
+    // 현재 그 타겟까지 옮기기 위한 카메라 
     private Vector3 targetCamOffset;
 
     private float lerpDefaultFOV;
@@ -171,10 +175,41 @@ public class ObitCamera : MonoBehaviour
         transformCamera.rotation = aimRotation;
 
         fovCamera.fieldOfView = Mathf.Lerp(fovCamera.fieldOfView, lerpTargetFOV, Time.deltaTime);
+        // 평상 시
         Vector3 posBaseTemp = characterPlayer.position + camRotationY * targetPivotOffset;
+        // 조준
         Vector3 noCollisionOffset = targetCamOffset;
+
+
+        for (float offsetZ = targetCamOffset.z; offsetZ <= 0f; offsetZ += 0.5f)
+        {
+            noCollisionOffset.z = offsetZ;
+
+            if (ckDoubleViewingPos(posBaseTemp + aimRotation * noCollisionOffset, Mathf.Abs(offsetZ)) || offsetZ == 0f)
+            {
+                break;
+            }
+        }
+
+        lerpCamOffset = Vector3.Lerp(lerpCamOffset, noCollisionOffset, smooth * Time.deltaTime);
+        lerpPivotOffset = Vector3.Lerp(lerpPivotOffset, targetPivotOffset, smooth * Time.deltaTime);
+
+        transformCamera.position = characterPlayer.position + camRotationY * lerpPivotOffset + aimRotation * lerpCamOffset;
+        
+        if(angleRecoil > 0.0f)
+        {
+            angleRecoil -= angleBounceRecoil * Time.deltaTime;
+        }
+        else if(angleRecoil< 0.0f)
+        {
+            angleRecoil += angleBounceRecoil*Time.deltaTime;
+        }
     }
 
+    public float getCurrentPivotMagnitude(Vector3 finalPivotOffset)
+    {
+        return Mathf.Abs((finalPivotOffset - lerpPivotOffset).magnitude);
+    }
 
 
 }
