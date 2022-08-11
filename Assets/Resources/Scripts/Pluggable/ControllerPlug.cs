@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ControllerPlug : MonoBehaviour
 {
-
     // 기능들
     private List<BasePluggable> plugs;
     // 우선권이 필요한 기능들
@@ -44,14 +43,14 @@ public class ControllerPlug : MonoBehaviour
     // 애니메이션 v축 값
     private float vFloat;
     // 땅 위에 붙어 있는가?
-    private bool flagOnGround;
+    private int flagOnGround;
     // 땅과의 충돌체크를 위한 충돌체 영역
     private Vector3 colliderGround;
 
     public float getHorizontal { get => h; }
     public float getVertical { get => v; }
     public ObitCamera getCameraScript { get => cameraScript; }
-    public Rigidbody getRigibody { get => playerRigidbody; }
+    public Rigidbody getRigidbody { get => playerRigidbody; }
     public Animator getAnimator { get => playerAnimator; }
     // 지금 어떤 플러그가 꽂혀 있는가?
     public int getDefaultPlugs { get => defaultPlugs; }
@@ -59,6 +58,7 @@ public class ControllerPlug : MonoBehaviour
 
     private void Awake()
     {
+        playerTransform = transform;
         plugs = new List<BasePluggable>();
         overridePlugs = new List<BasePluggable>();
         playerAnimator = GetComponent<Animator>();
@@ -67,9 +67,9 @@ public class ControllerPlug : MonoBehaviour
         colliderGround = GetComponent<Collider>().bounds.extents;
 
         // 애니메이터
-        hFloat = 0.0f;
-        vFloat = 0.0f;
-        flagOnGround = true;
+        hFloat = Animator.StringToHash("H");
+        vFloat = Animator.StringToHash("V");
+        flagOnGround = Animator.StringToHash("Grounded");
     }
 
     // 플레이어가 이동중인가?
@@ -125,8 +125,8 @@ public class ControllerPlug : MonoBehaviour
         h = Input.GetAxis("Horizontal");
         v = Input.GetAxis("Vertical");
 
-        playerAnimator.SetFloat((int)hFloat, h, 0.1f, Time.deltaTime);
-        playerAnimator.SetFloat((int)vFloat, v, 0.1f, Time.deltaTime);
+        playerAnimator.SetFloat("H", h, 0.1f, Time.deltaTime);
+        playerAnimator.SetFloat("V", v, 0.1f, Time.deltaTime);
 
         flagRun = Input.GetKey(KeyCode.Space);
 
@@ -161,7 +161,7 @@ public class ControllerPlug : MonoBehaviour
         {
             foreach (BasePluggable basePluggable in plugs)
             {
-                if (basePluggable.isActiveAndEnabled && currentPlugs == basePluggable.GetPlugsCode)
+                if (basePluggable.isActiveAndEnabled && currentPlugs == basePluggable.getPlugsCode)
                 {
                     flagAnyPlayActive = true;
                     basePluggable.childFixedUpdate();
@@ -189,7 +189,7 @@ public class ControllerPlug : MonoBehaviour
         {
             foreach (BasePluggable basePluggable in plugs)
             {
-                if (basePluggable.isActiveAndEnabled && currentPlugs == basePluggable.GetPlugsCode)
+                if (basePluggable.isActiveAndEnabled && currentPlugs == basePluggable.getPlugsCode)
                 {
                     basePluggable.childLateUpdate();
                 }
@@ -239,7 +239,7 @@ public class ControllerPlug : MonoBehaviour
             {
                 foreach (BasePluggable pluggable in plugs)
                 {
-                    if (pluggable.isActiveAndEnabled && currentPlugs == pluggable.GetPlugsCode)
+                    if (pluggable.isActiveAndEnabled && currentPlugs == pluggable.getPlugsCode)
                     {
                         pluggable.OnOverride();
                         break;
@@ -316,7 +316,7 @@ public class ControllerPlug : MonoBehaviour
 public abstract class BasePluggable : MonoBehaviour
 {
     // 속도 구별 : 걷고 달리는거 구별
-    protected float spdFloat;
+    protected int spdFloat;
     protected ControllerPlug controllerPlug;
 
     // 고유코드
@@ -334,7 +334,7 @@ public abstract class BasePluggable : MonoBehaviour
     }
 
     // 플러그 고유 코드 가져오기
-    public int GetPlugsCode { get => plugsCode; }
+    public int getPlugsCode { get => plugsCode; }
     // 나 달려도 될까?
     public bool flagAllowRun { get => getFlagRun; }
 
